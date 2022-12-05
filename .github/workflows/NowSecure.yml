@@ -44,7 +44,7 @@ scan:
   outputs:
     report_id: ${{ steps.upload.outputs.report_id }}
     # The stage that builds the application.
-  needs: build
+  needs: build_apk
   steps:
     - name: Checkout repository
       uses: actions/checkout@v2
