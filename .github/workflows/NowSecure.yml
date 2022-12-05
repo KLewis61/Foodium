@@ -1,4 +1,4 @@
-name: Build
+name: NowSecure
 on:
   workflow_dispatch:
     branches: [ master ]
