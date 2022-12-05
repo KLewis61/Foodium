@@ -66,28 +66,28 @@ scan:
           # TODO: Replace the Group ID.
         group_id: "602abed9-4c66-453d-8431-da0195b682de"
           
-    process:
-      if: ${{ needs.scan.outputs.report_id }}
-      runs-on: ubuntu-latest
-      environment:
-        name: nowsecure-env
-      # The above stage we introduced.
-      needs: scan
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v2
+  process:
+    if: ${{ needs.scan.outputs.report_id }}
+    runs-on: ubuntu-latest
+    environment:
+      name: nowsecure-env
+    # The above stage we introduced.
+    needs: scan
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-        - name: NowSecure download report
-          uses: nowsecure/nowsecure-action/convert-sarif@v3
-          timeout-minutes: 600
-          with:
-            report_id: ${{ needs.scan.outputs.report_id }}
-            platform_token: ${{ secrets.NS_TOKEN }}
-            # TODO: Replace the Group ID.
-            group_id: "602abed9-4c66-453d-8431-da0195b682de"
-            enable_dependencies: true
+      - name: NowSecure download report
+        uses: nowsecure/nowsecure-action/convert-sarif@v3
+        timeout-minutes: 600
+        with:
+          report_id: ${{ needs.scan.outputs.report_id }}
+          platform_token: ${{ secrets.NS_TOKEN }}
+          # TODO: Replace the Group ID.
+          group_id: "602abed9-4c66-453d-8431-da0195b682de"
+          enable_dependencies: true
 
-        - name: Upload SARIF file
-          uses: github/codeql-action/upload-sarif@v1
-          with:
-            sarif_file: NowSecure.sarif
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: NowSecure.sarif
