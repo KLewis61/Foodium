@@ -2,6 +2,8 @@ name: NowSecure
 on:
   workflow_dispatch:
    branches: [ master ]
+  pull_request:
+    branches: [ master ]
   # can add push and pull_request here 
 
 jobs:
@@ -10,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Set up JDK 12
         uses: actions/setup-java@v1
         with:
@@ -47,7 +49,10 @@ jobs:
     needs: build_apk
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
 
       # Replace with whatever pulls the application file before we upload.
       - name: Download application
@@ -76,10 +81,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
 
       - name: NowSecure download report
         uses: nowsecure/nowsecure-action/convert-sarif@v3
-        timeout-minutes: 600
+        timeout-minutes: 90
         with:
           report_id: ${{ needs.scan.outputs.report_id }}
           platform_token: ${{ secrets.NS_TOKEN }}
@@ -88,6 +96,6 @@ jobs:
           enable_dependencies: true
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: NowSecure.sarif
